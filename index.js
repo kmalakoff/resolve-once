@@ -28,12 +28,11 @@ module.exports = function(fn) {
   return function() {
     if (state === RESOLVED_SUCCESS) return Promise.resolve(result);
     else if (state === RESOLVED_ERROR) return Promise.reject(result);
-    else {
-      const promise = new Promise(function(resolve, reject) {
-        waiting.push({ resolve: resolve, reject: reject });
-      });
-      resolveResult();
-      return promise;
-    }
+
+    const promise = new Promise(function(resolve, reject) {
+      waiting.push({ resolve: resolve, reject: reject });
+    });
+    resolveResult();
+    return promise;
   };
 };
