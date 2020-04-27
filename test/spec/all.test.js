@@ -2,12 +2,6 @@ var assert = require('assert');
 
 var resolveOnce = require('../..');
 
-function sleep(timeout) {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, timeout);
-  });
-}
-
 describe('resolve-once', function () {
   if (typeof Promise === 'undefined') return; // no promise support
 
@@ -35,7 +29,7 @@ describe('resolve-once', function () {
   it('handle success (promise)', function (callback) {
     var counter = 0;
     const resolver = resolveOnce(function () {
-      return sleep(100).then(function () {
+      return Promise.resolve().then(function () {
         return ++counter;
       });
     });
@@ -58,7 +52,7 @@ describe('resolve-once', function () {
   it('handle failure (no promise)', function (callback) {
     var counter = 0;
     const resolver = resolveOnce(function () {
-      return sleep(100).then(function () {
+      return Promise.resolve().then(function () {
         ++counter;
         throw new Error('Failed');
       });
@@ -92,7 +86,7 @@ describe('resolve-once', function () {
   it('handle failure (promise)', function (callback) {
     var counter = 0;
     const resolver = resolveOnce(function () {
-      return sleep(100).then(function () {
+      return Promise.resolve().then(function () {
         ++counter;
         return Promise.reject(new Error('Failed'));
       });
