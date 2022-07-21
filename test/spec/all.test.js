@@ -3,8 +3,6 @@ var assert = require('assert');
 var resolveOnce = require('../..');
 
 describe('resolve-once', function () {
-  if (typeof Promise === 'undefined') return; // no promise support
-
   it('handle success (no promise)', function (callback) {
     var counter = 0;
     const resolver = resolveOnce(function () {
