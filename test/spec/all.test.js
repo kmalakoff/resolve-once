@@ -1,22 +1,21 @@
-var assert = require('assert');
+const assert = require('assert');
 
-var resolveOnce = require('../..');
+const resolveOnce = require('resolve-once');
 
-describe('resolve-once', function () {
-  it('handle success (no promise)', function (callback) {
-    var counter = 0;
-    const resolver = resolveOnce(function () {
-      return ++counter;
-    });
+describe('resolve-once', () => {
+  it('handle success (no promise)', (callback) => {
+    let counter = 0;
+    const resolver = resolveOnce(() => ++counter);
 
-    Promise.all([resolver(), resolver(), resolver()]).then(function (results) {
+    Promise.all([resolver(), resolver(), resolver()]).then((results) => {
       assert.equal(results.length, 3);
-      results.forEach(function (result) {
+
+      results.forEach((result) => {
         assert.equal(result, 1);
       });
       assert.equal(counter, 1);
 
-      resolver().then(function (result) {
+      resolver().then((result) => {
         assert.equal(result, 1);
         assert.equal(counter, 1);
         callback();
@@ -24,22 +23,19 @@ describe('resolve-once', function () {
     });
   });
 
-  it('handle success (promise)', function (callback) {
-    var counter = 0;
-    const resolver = resolveOnce(function () {
-      return Promise.resolve().then(function () {
-        return ++counter;
-      });
-    });
+  it('handle success (promise)', (callback) => {
+    let counter = 0;
+    const resolver = resolveOnce(() => Promise.resolve().then(() => ++counter));
 
-    Promise.all([resolver(), resolver(), resolver()]).then(function (results) {
+    Promise.all([resolver(), resolver(), resolver()]).then((results) => {
       assert.equal(results.length, 3);
-      results.forEach(function (result) {
+
+      results.forEach((result) => {
         assert.equal(result, 1);
       });
       assert.equal(counter, 1);
 
-      resolver().then(function (result) {
+      resolver().then((result) => {
         assert.equal(result, 1);
         assert.equal(counter, 1);
         callback();
@@ -47,18 +43,18 @@ describe('resolve-once', function () {
     });
   });
 
-  it('handle failure (no promise)', function (callback) {
-    var counter = 0;
-    const resolver = resolveOnce(function () {
-      return Promise.resolve().then(function () {
+  it('handle failure (no promise)', (callback) => {
+    let counter = 0;
+    const resolver = resolveOnce(() =>
+      Promise.resolve().then(() => {
         ++counter;
         throw new Error('Failed');
-      });
-    });
+      })
+    );
 
     function wrapError() {
-      return new Promise(function (resolve, reject) {
-        resolver().catch(function (err) {
+      return new Promise((resolve, _reject) => {
+        resolver().catch((err) => {
           assert.equal(counter, 1);
           assert.equal(err.message, 'Failed');
           resolve(counter);
@@ -66,14 +62,15 @@ describe('resolve-once', function () {
       });
     }
 
-    Promise.all([wrapError(), wrapError(), wrapError()]).then(function (results) {
+    Promise.all([wrapError(), wrapError(), wrapError()]).then((results) => {
       assert.equal(results.length, 3);
-      results.forEach(function (result) {
+
+      results.forEach((result) => {
         assert.equal(result, 1);
       });
       assert.equal(counter, 1);
 
-      resolver().catch(function (err) {
+      resolver().catch((err) => {
         assert.equal(counter, 1);
         assert.equal(err.message, 'Failed');
         callback();
@@ -81,18 +78,18 @@ describe('resolve-once', function () {
     });
   });
 
-  it('handle failure (promise)', function (callback) {
-    var counter = 0;
-    const resolver = resolveOnce(function () {
-      return Promise.resolve().then(function () {
+  it('handle failure (promise)', (callback) => {
+    let counter = 0;
+    const resolver = resolveOnce(() =>
+      Promise.resolve().then(() => {
         ++counter;
         return Promise.reject(new Error('Failed'));
-      });
-    });
+      })
+    );
 
     function wrapError() {
-      return new Promise(function (resolve, reject) {
-        resolver().catch(function (err) {
+      return new Promise((resolve, _reject) => {
+        resolver().catch((err) => {
           assert.equal(counter, 1);
           assert.equal(err.message, 'Failed');
           resolve(counter);
@@ -100,14 +97,15 @@ describe('resolve-once', function () {
       });
     }
 
-    Promise.all([wrapError(), wrapError(), wrapError()]).then(function (results) {
+    Promise.all([wrapError(), wrapError(), wrapError()]).then((results) => {
       assert.equal(results.length, 3);
-      results.forEach(function (result) {
+
+      results.forEach((result) => {
         assert.equal(result, 1);
       });
       assert.equal(counter, 1);
 
-      resolver().catch(function (err) {
+      resolver().catch((err) => {
         assert.equal(counter, 1);
         assert.equal(err.message, 'Failed');
         callback();
