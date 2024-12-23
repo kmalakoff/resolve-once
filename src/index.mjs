@@ -1,39 +1,37 @@
-require('./polyfills')
-var UNRESOLVED = 0;
-var RESOLVING = 1;
-var RESOLVED_SUCCESS = 2;
-var RESOLVED_ERROR = 3;
+const UNRESOLVED = 0;
+const RESOLVING = 1;
+const RESOLVED_SUCCESS = 2;
+const RESOLVED_ERROR = 3;
 
-module.exports = function (fn) {
-  var state = UNRESOLVED;
-  var result;
-  var waiting = [];
+export default function resolveOnce(fn) {
+  let state = UNRESOLVED;
+  let result;
+  const waiting = [];
 
   function resolveResult() {
     if (state === RESOLVING) return;
     state = RESOLVING;
 
     Promise.resolve(fn())
-      .then(function (value) {
+      .then((value) => {
         state = RESOLVED_SUCCESS;
         result = value;
         while (waiting.length) waiting.pop().resolve(result);
       })
-      .catch(function (err) {
+      .catch((err) => {
         state = RESOLVED_ERROR;
         result = err;
         while (waiting.length) waiting.pop().reject(result);
       });
   }
 
-  return function () {
+  return () => {
     if (state === RESOLVED_SUCCESS) return Promise.resolve(result);
-    else if (state === RESOLVED_ERROR) return Promise.reject(result);
-
-    const promise = new Promise(function (resolve, reject) {
+    if (state === RESOLVED_ERROR) return Promise.reject(result);
+    const promise = new Promise((resolve, reject) => {
       waiting.push({ resolve: resolve, reject: reject });
     });
     resolveResult();
     return promise;
   };
-};
+}
