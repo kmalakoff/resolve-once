@@ -1,6 +1,6 @@
 {
   "name": "resolve-once",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Resolves a promise only once and memoizes the result",
   "keywords": [
     "promise",
