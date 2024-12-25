@@ -1,3 +1,6 @@
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+import Promise from 'pinkie-promise';
+
 const UNRESOLVED = 0;
 const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
@@ -5,7 +8,7 @@ const RESOLVED_ERROR = 3;
 
 export default function resolveOnce(fn) {
   let state = UNRESOLVED;
-  let result;
+  let result: Error | unknown;
   const waiting = [];
 
   function resolveResult() {
