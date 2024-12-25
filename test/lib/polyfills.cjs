@@ -1,1 +1,2 @@
-require('core-js/actual/promise');
+import Pinkie from 'pinkie-promise';
+if (typeof Promise === 'undefined') global.Promise = Pinkie;
