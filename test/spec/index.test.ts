@@ -1,9 +1,21 @@
-require('../lib/polyfills.cjs');
-const assert = require('assert');
+import assert from 'assert';
+// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
+import Promise from 'pinkie-promise';
 
-const resolveOnce = require('resolve-once');
+// @ts-ignore
+import resolveOnce from 'resolve-once';
 
 describe('resolve-once', () => {
+  const root = typeof global !== 'undefined' ? global : window;
+  let rootPromise: Promise;
+  before(() => {
+    rootPromise = root.Promise;
+    root.Promise = Promise;
+  });
+  after(() => {
+    root.Promise = rootPromise;
+  });
+
   it('handle success (no promise)', (callback) => {
     let counter = 0;
     const resolver = resolveOnce(() => ++counter);
