@@ -1,6 +1,3 @@
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-import Promise from 'pinkie-promise';
-
 const UNRESOLVED = 0;
 const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
