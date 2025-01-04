@@ -1,20 +1,23 @@
 import assert from 'assert';
-// biome-ignore lint/suspicious/noShadowRestrictedNames: <explanation>
-import Promise from 'pinkie-promise';
-
+import Pinkie from 'pinkie-promise';
 // @ts-ignore
 import resolveOnce from 'resolve-once';
 
 describe('resolve-once', () => {
-  const root = typeof global !== 'undefined' ? global : window;
-  let rootPromise: Promise;
-  before(() => {
-    rootPromise = root.Promise;
-    root.Promise = Promise;
-  });
-  after(() => {
-    root.Promise = rootPromise;
-  });
+  (() => {
+    // patch and restore promise
+    const root = typeof global !== 'undefined' ? global : window;
+    // @ts-ignore
+    let rootPromise: Promise;
+    before(() => {
+      rootPromise = root.Promise;
+      // @ts-ignore
+      root.Promise = Pinkie;
+    });
+    after(() => {
+      root.Promise = rootPromise;
+    });
+  })();
 
   it('handle success (no promise)', (callback) => {
     let counter = 0;
