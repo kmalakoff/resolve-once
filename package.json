@@ -18,7 +18,7 @@
   "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
   "type": "module",
   "main": "dist/cjs/index.cjs",
-  "types": "dist/types/index.d.ts",
+  "types": "dist/cjs/index.d.cts",
   "files": [
     "dist"
   ],
