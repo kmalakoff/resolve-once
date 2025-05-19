@@ -17,7 +17,7 @@
   "license": "MIT",
   "author": "Kevin Malakoff <kmalakoff@gmail.com> (https://github.com/kmalakoff)",
   "type": "module",
-  "main": "dist/cjs/index.cjs",
+  "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.cts",
   "files": [
     "dist"
