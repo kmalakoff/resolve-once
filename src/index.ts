@@ -3,9 +3,11 @@ const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
 const RESOLVED_ERROR = 3;
 
-export default function resolveOnce(fn) {
+export type Resolver<T> = (...any: unknown[]) => Promise<T>;
+
+export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
   let state = UNRESOLVED;
-  let result: Error | unknown;
+  let result: T | Error;
   const waiting = [];
 
   function resolveResult() {
@@ -26,12 +28,12 @@ export default function resolveOnce(fn) {
   }
 
   return () => {
-    if (state === RESOLVED_SUCCESS) return Promise.resolve(result);
-    if (state === RESOLVED_ERROR) return Promise.reject(result);
+    if (state === RESOLVED_SUCCESS) return Promise.resolve<T>(result as T);
+    if (state === RESOLVED_ERROR) return Promise.reject<T>(result);
     const promise = new Promise((resolve, reject) => {
       waiting.push({ resolve: resolve, reject: reject });
     });
     resolveResult();
-    return promise;
+    return promise as Promise<T>;
   };
 }

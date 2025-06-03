@@ -21,7 +21,7 @@ describe('resolve-once', () => {
 
   it('handle success (no promise)', (callback) => {
     let counter = 0;
-    const resolver = resolveOnce(() => ++counter);
+    const resolver = resolveOnce<number>(() => Promise.resolve(++counter));
 
     Promise.all([resolver(), resolver(), resolver()]).then((results) => {
       assert.equal(results.length, 3);
