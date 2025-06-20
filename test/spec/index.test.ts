@@ -6,16 +6,13 @@ import resolveOnce from 'resolve-once';
 describe('resolve-once', () => {
   (() => {
     // patch and restore promise
-    const root = typeof global !== 'undefined' ? global : window;
-    // @ts-ignore
-    let rootPromise: Promise;
+    if (typeof global === 'undefined') return;
+    const globalPromise = global.Promise;
     before(() => {
-      rootPromise = root.Promise;
-      // @ts-ignore
-      root.Promise = Pinkie;
+      global.Promise = Pinkie;
     });
     after(() => {
-      root.Promise = rootPromise;
+      global.Promise = globalPromise;
     });
   })();
 
