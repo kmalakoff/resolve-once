@@ -3,7 +3,7 @@ const RESOLVING = 1;
 const RESOLVED_SUCCESS = 2;
 const RESOLVED_ERROR = 3;
 
-export type Resolver<T> = (...any: unknown[]) => Promise<T>;
+export type Resolver<T> = (...args: unknown[]) => Promise<T>;
 
 export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
   let state = UNRESOLVED;
