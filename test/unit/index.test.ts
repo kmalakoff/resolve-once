@@ -1,6 +1,5 @@
 import assert from 'assert';
 import Pinkie from 'pinkie-promise';
-// @ts-ignore
 import resolveOnce from 'resolve-once';
 
 describe('resolve-once', () => {
