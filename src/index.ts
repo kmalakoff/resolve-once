@@ -8,7 +8,7 @@ export type Resolver<T> = (...args: unknown[]) => Promise<T>;
 export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
   let state = UNRESOLVED;
   let result: T | Error;
-  const waiting = [];
+  const waiting: { resolve: (value: T) => void; reject: (reason: unknown) => void }[] = [];
 
   function resolveResult() {
     if (state === RESOLVING) return;
@@ -18,12 +18,12 @@ export default function resolveOnce<T>(fn: Resolver<T>): Resolver<T> {
       .then((value) => {
         state = RESOLVED_SUCCESS;
         result = value;
-        while (waiting.length) waiting.pop().resolve(result);
+        while (waiting.length) waiting.pop()?.resolve(result);
       })
       .catch((err) => {
         state = RESOLVED_ERROR;
         result = err;
-        while (waiting.length) waiting.pop().reject(result);
+        while (waiting.length) waiting.pop()?.reject(result);
       });
   }
 
