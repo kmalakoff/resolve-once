@@ -1,6 +1,6 @@
 {
   "name": "resolve-once",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Resolves a promise only once and memoizes the result",
   "main": "index.js",
   "engines": {
