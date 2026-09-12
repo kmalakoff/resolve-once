@@ -1,15 +1,37 @@
-## resolve-once
+# resolve-once
 
-Resolves a promise only once and memoizes the result.
+Runs an asynchronous resolver once and memoizes its success or failure.
 
-## Usage
+## Install
 
+```sh
+npm install resolve-once
 ```
-const resolveOnce = require('resolve-once');
-const { MongoClient } = require('mongodb');
 
-const connection = resolveOnce(() => MongoClient.connect('mongodb://localhost:27017/database'));
-const db1 = await connection();
-const db2 = await connection();
-// db1 === db2
+## Use
+
+The resolver below runs once even when several callers request its result at the same time:
+
+```js
+var resolveOnce = require('resolve-once');
+
+var calls = 0;
+var getValue = resolveOnce(function () {
+  return new Promise(function (resolve) {
+    calls += 1;
+    setTimeout(function () { resolve({ calls: calls }); }, 10);
+  });
+});
+
+Promise.all([getValue(), getValue()]).then(function (values) {
+  console.log(values[0] === values[1], calls); // true 1
+});
 ```
+
+Each caller gets the result of the same resolver operation, but receives its own Promise. After the first operation settles, later calls return the cached value or reject with the cached error. The package does not retry after rejection.
+
+The implementation uses the global `Promise`; environments without a Promise implementation must provide one.
+
+## License
+
+MIT
